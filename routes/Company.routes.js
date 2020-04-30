@@ -29,7 +29,7 @@ router.post('/create', function (req, res) {
           if (err) return res.status(500).send("There was a problem registering.");
           console.log(err)
 
-          res.status(200).send(user);
+           res.success(200, "Details Inserted Successfully");
         });
 });
 // router.get('/viewData/:id', VerifyToken, function (req, res) {

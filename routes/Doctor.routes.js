@@ -1,11 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
+var nodemailer = require('nodemailer');
 //var VerifyToken = require('./VerifyToken');
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 var Doctor = require('./../models/DoctorModel');
+var responseMiddleware = require('./../middlewares/response.middleware');
+router.use(responseMiddleware());
 /**
  * Configure JWT
  */
@@ -37,7 +40,7 @@ router.post('/Signup', function(req, res) {
           if (err) return res.status(500).send({message:"There was a problem registering."});
           console.log(err)
 
-          res.status(200).send({Message:user});
+          res.success(200, "Details Inserted successfully");
         });
 
 });
@@ -49,6 +52,7 @@ router.post('/login', function(req, res) {
         
         // check if the password is valid
         var passwordIsValid = await Doctor.find({Email:req.body.Email,Password:req.body.Password});
+        var DoctorDetails = await Doctor.findOne({Email:req.body.Email});
         if (!passwordIsValid) return res.status(401).send({ auth: false, message: "Incorrect password" });
         //if(!CustomerCode) return res.status(401).send("Customer code not applicable");
 
@@ -59,7 +63,38 @@ router.post('/login', function(req, res) {
         // });
 
         // return the information including token as JSON
-        res.status(200).send({ Message: "Login Successful", login: "success" });
+         res.success(200, "Login successfully", DoctorDetails);
+      });
+
+});
+router.post('/forgotpassword',  function(req, res) {
+
+      Doctor.findOne({ Email: req.body.Email }, async function (err, user) {
+        if (err) return res.status(500).send('Error on the server.');
+        if (!user) return res.status(404).send('No user found.');
+        var password = await Doctor.find({Email:req.body.Email}).select('password');
+        console.log(password);
+       var transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'anjani513devi@gmail.com',
+            pass: 'anjanichotu@24'
+          }
+        });
+
+        var mailOptions = {
+          to: req.body.Email,
+          subject: 'Forgot password Mail',
+          text: "Please check your password" +password,
+      };
+       transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+          console.log("erorr related the mail ", error);
+          } else {
+          console.log('Email sent: ' + info.response);
+          }
+        });
+        res.success(200, "Password has been sent to the registered Email ID");
       });
 
 });

@@ -23,9 +23,7 @@ var CompanySchema = new mongoose.Schema({
     enum :[0,1],
     Default: 0
   },
-Balance: String,
-Prepaidamount:String,
-AmountUsed : String,
+  DiscountOffered: String,
 });
 mongoose.model('Company', CompanySchema);
 
