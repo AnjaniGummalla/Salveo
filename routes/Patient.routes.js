@@ -64,8 +64,8 @@ router.post('/login',  function(req, res) {
 router.post('/forgotpassword',  function(req, res) {
 
       Patient.findOne({ Email: req.body.Email }, async function (err, user) {
-        if (err) return res.status(500).send('Error on the server.');
-        if (!user) return res.status(404).send('No user found.');
+        if (err) return res.error(500, "Internal server Error");
+        if (!user) return res.error(404, "No User Found");
         var password = await Patient.find({Email:req.body.Email}).select('password');
         console.log(password);
        var transporter = nodemailer.createTransport({
@@ -93,12 +93,12 @@ router.post('/forgotpassword',  function(req, res) {
 
 });
 
-// router.get('/getlist',VerifyToken, function (req, res) {
-//         User.find({AdminType:0}, function (err, users) {
-//             if (err) return res.status(500).send("There was a problem finding the users.");
-//             res.status(200).send(users);
-//         });
-// });
+router.get('/getlist', function (req, res) {
+        Patient.find({}, function (err, patients) {
+            if (err) return res.error(500 , "There was a problem finding the PatientList.");
+             res.success(200, "Patientlist",patients);
+        });
+});
 // router.get('/viewData/:id', VerifyToken, function (req, res) {
 //       User.findById(req.params.id, function (err, user) {
 //           if (err) return res.status(500).send("There was a problem finding the user.");

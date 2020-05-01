@@ -19,10 +19,8 @@ router.post('/create', function (req, res) {
          Location :req.body.Location,
          Coverage:req.body.Coverage,
          Employees: req.body.Employees,
-         ConsultantDoctors: req.body.doctors,
-         Prepaidamount: req.body.prepaidamount,
-         AmountUsed: req.body.AmountUsed,
-         Balance:req.body.Balance
+         ConsultantDoctors: req.body.ConsultantDoctors,
+         DiscountOffered:req.body.DiscountOffered
         }, 
 
         function (err, user) {
