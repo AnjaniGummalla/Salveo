@@ -13,9 +13,8 @@ router.use(responseMiddleware());
 router.post('/create', function(req, res) {
 
         Doctortype.create({
-          Image_link: req.body.Image_link,
-          Added_by: req.body.Added_by,
-          UpdatedAt: req.body.UpdatedAt,
+          Image_icon: req.body.Image_link,
+          Name_of_the_type: req.body.Added_by,
         }, 
 
         function (err, user) {
