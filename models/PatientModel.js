@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
 var PatientSchema = new mongoose.Schema({  
   
-  FirstName: String,
+  Name: String,
   
   LastName : String,
   
@@ -11,9 +11,9 @@ var PatientSchema = new mongoose.Schema({
   	type: String,
   	unique: true
   },
-  Age:{
-    type: String,
-    },
+
+  Age: Number,
+
   Gender : String,
 
   Password: String,
@@ -30,17 +30,42 @@ var PatientSchema = new mongoose.Schema({
 
   Invoice: String,
 
-  Family:{  
+  Height : String,
 
-       type: Schema.Types.ObjectId,
-       ref: 'Family',
+  Weight : String,
+
+  Suffering_for: String,
+
+  Looking_doctor_like: String,
+
+  Looking_doctor_specialisation: String,
+
+  Current_location:{
+
+   type: { type: String },
+   coordinates: []
+  },
+
+  // Family:{  
+
+  //      type: Schema.Types.ObjectId,
+  //      ref: 'Family',
      
-      },
+  //     },
 
   Company: String,
 
   Documents: String,
+  
+  Attach_prescription: String,
 
+  About_me: String,
+
+  Update_date: String,
+
+  last_login_time: String,
+
+  login_type: String
  
 });
 mongoose.model('Patient', PatientSchema);

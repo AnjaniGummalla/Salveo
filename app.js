@@ -9,6 +9,8 @@ var patientRouter = require('./routes/Patient.routes');
 var doctorRouter = require('./routes/Doctor.routes');
 var CompanyRouter = require('./routes/Company.routes');
 var UserRouter = require('./routes/User.routes');
+var FamilyRouter = require('./routes/Family.routes');
+var PaymentRouter = require('./routes/Payment.routes');
 
 const mongoose = require('mongoose'); 
 mongoose.connect('mongodb://localhost:27017/Salveo'); 
@@ -35,8 +37,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', patientRouter);
 app.use('/user',UserRouter);
 app.use('/doctor', doctorRouter);
-app.use('/company',CompanyRouter)
-
+app.use('/company',CompanyRouter);
+app.use('/family',FamilyRouter);
+app.use('/payment',PaymentRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

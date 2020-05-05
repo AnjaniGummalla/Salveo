@@ -136,7 +136,7 @@ router.put('/edit/:id', function (req, res) {
 });
 // // DELETES A USER FROM THE DATABASE
 router.delete('/delete/:id', function (req, res) {
-      User.findByIdAndRemove(req.params.id, function (err, user) {
+      Doctor.findByIdAndRemove(req.params.id, function (err, user) {
           if (err) return res.status(500).send("There was a problem deleting the user.");
           res.success(200, "Data Deleted Successfully");
       });
