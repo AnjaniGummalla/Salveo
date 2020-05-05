@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var patientRouter = require('./routes/Patient.routes');
 var doctorRouter = require('./routes/Doctor.routes');
 var CompanyRouter = require('./routes/Company.routes');
+var UserRouter = require('./routes/User.routes');
 
 const mongoose = require('mongoose'); 
 mongoose.connect('mongodb://localhost:27017/Salveo'); 
@@ -32,6 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', patientRouter);
+app.use('/user',UserRouter);
 app.use('/doctor', doctorRouter);
 app.use('/company',CompanyRouter)
 

@@ -15,10 +15,13 @@ router.use(responseMiddleware());
 //var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 //var config = require('../config'); // get config file
 
-router.post('/Signup', function(req, res) {
+router.post('/signup', function(req, res) {
+
+    var lat = req.body.lat;
+   var long = req.body.long;
 
         Doctor.create({
-         FirstName: req.body.FirstName,
+         Name: req.body.Name,
          Email:req.body.Email,
          Password:req.body.Password,
          ContactNumber:req.body.ContactNumber,  
@@ -27,13 +30,24 @@ router.post('/Signup', function(req, res) {
          Qualifications : req.body.Qualifications,
          HighestQualifications: req.body.HighestQualifications,
          Specilization: req.body.Specilization,
-         YearPassing: req.body.YearPassing,
+         Year_of_Passout: req.body.YearPassing,
+          Current_location: { 
+              "type": "Point",
+              "coordinates": [lat,long]
+            },
          Experience: req.body.Experience,
-         CurrentLocation: req.body.CurrentLocation,
+         Current_employee_id: req.body.Current_employee_id,
          EmployeeAt: req.body.EmployeeAt,
          AvailableHours: req.body. AvailableHours,
          OnlineConsultant: req.body.OnlineConsultant,
          Information: req.body.Information,
+          login_type : req.body.login_type,
+          Updated_At : req.body.Updated_At,
+          last_login_time: req.body.last_login_time,
+          Available_type: req.body.Available_type,
+          Service: req.body.Service,
+          Special_mention:req.body.Special_mention,
+          Charge_Per_15min:req.body.Charge_Per_15min,
         }, 
 
         function (err, user) {
@@ -99,12 +113,13 @@ router.post('/forgotpassword',  function(req, res) {
 
 });
 
-// router.get('/getlist',VerifyToken, function (req, res) {
-//         User.find({AdminType:0}, function (err, users) {
-//             if (err) return res.status(500).send("There was a problem finding the users.");
-//             res.status(200).send(users);
-//         });
-// });
+router.get('/getlist', function (req, res) {
+
+        Doctor.find({}, function (err, doctors) {
+            if (err) return res.status(500).send("There was a problem finding the Doctors.");
+            res.success(200, "doctorslist",doctors);
+        });
+});
 // router.get('/viewData/:id', VerifyToken, function (req, res) {
 //       User.findById(req.params.id, function (err, user) {
 //           if (err) return res.status(500).send("There was a problem finding the user.");
@@ -113,18 +128,18 @@ router.post('/forgotpassword',  function(req, res) {
 //       });
 // });
 
-// router.put('/edit/:id',VerifyToken, function (req, res) {
-//         User.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, user) {
-//             if (err) return res.status(500).send("There was a problem updating the user.");
-//             res.status(200).send(user);
-//         });
-// });
+router.put('/edit/:id', function (req, res) {
+        Doctor.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, user) {
+            if (err) return res.status(500).send("There was a problem updating the user.");
+            res.success(200, "Data Updated Successfully");
+        });
+});
 // // DELETES A USER FROM THE DATABASE
-// router.delete('/delete/:id',VerifyToken, function (req, res) {
-//       User.findByIdAndRemove(req.params.id, function (err, user) {
-//           if (err) return res.status(500).send("There was a problem deleting the user.");
-//           res.status(200).send("User: "+ user.name +" was deleted.");
-//       });
-// });
+router.delete('/delete/:id', function (req, res) {
+      User.findByIdAndRemove(req.params.id, function (err, user) {
+          if (err) return res.status(500).send("There was a problem deleting the user.");
+          res.success(200, "Data Deleted Successfully");
+      });
+});
 
 module.exports = router;

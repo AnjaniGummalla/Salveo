@@ -7,6 +7,7 @@ var nodemailer = require('nodemailer');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 var Patient = require('./../models/PatientModel');
+var Doctor = require('./../models/DoctorModel');
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
 /**
@@ -37,30 +38,42 @@ router.post('/Signup', function(req, res) {
         });
 
 });
-router.post('/login',  function(req, res) {
+router.post('/login',  async function(req, res) {
 
-      Patient.findOne({ Email: req.body.Email }, async function (err, user) {
-        if (err) return res.status(500).send('Error on the server.');
-        if (!user) return res.status(404).send({Message:'No user found.'});
-        
-        // check if the password is valid
-        var passwordIsValid = await Patient.find({Email:req.body.Email,Password:req.body.Password});
+      try{
+
         var patientDetails = await Patient.findOne({Email:req.body.Email});
-        if (!passwordIsValid) return res.status(401).send({ auth: false, message: "Incorrect password" });
-        //if(!CustomerCode) return res.status(401).send("Customer code not applicable");
 
-        // if user is found and password is valid
-        // create a token
-        // var token = jwt.sign({ id: user._id }, config.secret, {
-        //   expiresIn: 86400 // expires in 24 hours
-        // });
+        var DoctorsDetails  = await Doctor.findOne({Email:req.body.Email});
+       
+        if( patientDetails == null && DoctorsDetails == null){
 
-        // return the information including token as JSON
-        //res.json(patientDetails);
-      res.success(200, "Login successfully", patientDetails);
+        res.error(404, "Email not found");
+
+        }
+
+        var Patientpassword = await Patient.find({Email:req.body.Email,Password:req.body.Password});
+
+        var Doctorpassword = await Doctor.find({Email:req.body.Email,Password:req.body.Password});
+
+        
+        if (!Patientpassword || ! Doctorpassword ) return res.error(401,"Incorrect password");
+        if(Patientpassword == null){
+          res.success(200, "Login successfully", DoctorsDetails);
+        }
+        else{
+
+          res.success(200, "Login successfully", patientDetails);
+        }
+      }
+     catch(e){
+
+      return res.error(500, "server_error");
+
+     }
+
       });
 
-});
 router.post('/forgotpassword',  function(req, res) {
 
       Patient.findOne({ Email: req.body.Email }, async function (err, user) {

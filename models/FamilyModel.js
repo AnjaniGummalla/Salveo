@@ -11,6 +11,8 @@ var FamilySchema = new mongoose.Schema({
   Age: Number,
   
   Gender : String,
+
+  BloodGroup : String,
   
   ContactNumber:String,
 
