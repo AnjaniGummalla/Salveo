@@ -1,10 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var nodemailer = require('nodemailer')
 var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 var UserModel = require('./../models/UserModel');
 var Doctor = require('./../models/DoctorModel');
+var Patient = require('./../models/PatientModel');
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
 
@@ -38,6 +40,74 @@ router.post('/register', async function(req, res) {
         });
 });
 
+router.post('/login',  async function(req, res) {
+
+      try{
+
+        var Emailcheck = await UserModel.findOne({Email:req.body.Email});
+       
+        if( Emailcheck == null){
+
+        res.error(404, "Email not found");
+
+        }
+
+        var PasswordCheck = await UserModel.find({Email:req.body.Email,Password:req.body.Password});
+
+         if (!PasswordCheck) return res.error(401,"Incorrect password");
+
+        var patientDetails = await Patient.find({Email:req.body.Email});
+
+        var DoctorsDetails = await Doctor.find({Email:req.body.Email});
+   
+        if(patientDetails == null){
+
+          res.success(200, "Login successfully", DoctorsDetails);
+        }
+        else{
+
+          res.success(200, "Login successfully", patientDetails);
+        }
+      }
+     catch(e){
+
+      return res.error(500, "server_error");
+
+     }
+
+      });
+
+router.post('/forgotpassword',  function(req, res) {
+
+      UserModel.findOne({ Email: req.body.Email }, async function (err, user) {
+        if (err) return res.error(500, "Internal server Error");
+        if (!user) return res.error(404, "No User Found");
+        var password = await UserModel.find({Email:req.body.Email}).select('password');
+        console.log(password);
+       var transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'anjani513devi@gmail.com',
+            pass: 'anjanichotu@24'
+          }
+        });
+
+        var mailOptions = {
+          to: req.body.Email,
+          subject: 'Forgot password Mail',
+          text: "Please check your password" +password,
+      };
+       transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+          console.log("erorr related the mail ", error);
+          } else {
+          console.log('Email sent: ' + info.response);
+          }
+        });
+        res.success(200, "Password has been sent to the registered Email ID");
+      });
+
+});
 
 router.get('/getlist', function (req, res) {
 
