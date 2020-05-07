@@ -22,7 +22,7 @@ var PatientSchema = new mongoose.Schema({
   
   Phone: String,
 
-  CustomerCode: String,
+  CorporateCode: String,
 
   AvailableBalance: Number,
 
@@ -46,12 +46,12 @@ var PatientSchema = new mongoose.Schema({
    coordinates: []
   },
 
-  // Family:{  
+  Family:{  
 
-  //      type: Schema.Types.ObjectId,
-  //      ref: 'Family',
+       type: Schema.Types.ObjectId,
+       ref: 'Family',
      
-  //     },
+      },
 
   Company: String,
 

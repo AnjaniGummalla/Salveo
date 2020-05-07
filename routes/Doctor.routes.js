@@ -9,18 +9,14 @@ router.use(bodyParser.json());
 var Doctor = require('./../models/DoctorModel');
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
-/**
- * Configure JWT
- */
-//var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-//var config = require('../config'); // get config file
 
-router.post('/signup', function(req, res) {
+router.post('/signup', async function(req, res) {
+  try{
 
     var lat = req.body.lat;
    var long = req.body.long;
 
-        Doctor.create({
+        await Doctor.create({
          Name: req.body.Name,
          Email:req.body.Email,
          Password:req.body.Password,
@@ -50,12 +46,16 @@ router.post('/signup', function(req, res) {
           Charge_Per_15min:req.body.Charge_Per_15min,
         }, 
 
-        function (err, user) {
+        function (err, data) {
           if (err) return res.status(500).send({message:"There was a problem registering."});
           console.log(err)
-
-          res.success(200, "Details Inserted successfully");
+          console.log("mmmmmmmmmmmmmmmm" ,data)
+          res.success(200, "Details Inserted successfully",data);
         });
+      }
+      catch(e){
+        res.error(500, "Internal server error");
+      }
 
 });
 router.post('/login', function(req, res) {
@@ -120,24 +120,17 @@ router.get('/getlist', function (req, res) {
             res.success(200, "doctorslist",doctors);
         });
 });
-// router.get('/viewData/:id', VerifyToken, function (req, res) {
-//       User.findById(req.params.id, function (err, user) {
-//           if (err) return res.status(500).send("There was a problem finding the user.");
-//           if (!user) return res.status(404).send("No user found.");
-//           res.status(200).send(user);
-//       });
-// });
 
 router.put('/edit/:id', function (req, res) {
-        Doctor.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, user) {
+        Doctor.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, data) {
             if (err) return res.status(500).send("There was a problem updating the user.");
-            res.success(200, "Data Updated Successfully");
+            res.success(200, "Data Updated Successfully",data);
         });
 });
 // // DELETES A USER FROM THE DATABASE
 router.delete('/delete/:id', function (req, res) {
-      Doctor.findByIdAndRemove(req.params.id, function (err, user) {
-          if (err) return res.status(500).send("There was a problem deleting the user.");
+      Doctor.findByIdAndRemove(req.params.id, function (err, data) {
+          if (err) return res.status(500).send("There was a problem deleting the data.");
           res.success(200, "Data Deleted Successfully");
       });
 });

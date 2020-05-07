@@ -8,17 +8,19 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 var Patient = require('./../models/PatientModel');
 var Doctor = require('./../models/DoctorModel');
-var Family = require('./../models/FamilyModel');
+var family = require('./../models/FamilyModel');
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
 
-router.post('/create', function(req, res) {
-
-
+router.post('/create', async function(req, res) {
+  try{
+        let request = req.body;
+        let patientData = req.body.patientData;
+        console.log("patient id in which the data is inserted", patientData);
     var lat = req.body.lat;
    var long = req.body.long;
 
-        Family.create({
+        await family.create({
             Name: req.body.Name,
             Email_id: req.body.Email_id,
             LastName: req.body.LastName,
@@ -42,28 +44,26 @@ router.post('/create', function(req, res) {
 
         }, 
 
-        function (err, user) {
+       async function (err, user) {
           if (err) return res.status(500).send("There was a problem registering.");
           console.log(err)
-
+          var familyid = await Patient.findByIdAndUpdate(patientData,{Family :user._id} ,{ upsert: true, new: true });
+          console.log("familyid updated successfully in the pateint list",familyid )
           res.success(200, "Family details Inserted successfully");
         });
-
+}
+catch(e){
+      res.error(500, "Internal server error");
+}
 });
-router.get('/getlist', function (req, res) {
-
-        Family.find({}, function (err, patients) {
-            if (err) return res.error(500 , "There was a problem finding the PatientList.");
-             res.success(200, "Patientlist",patients);
-        });
+router.get('/getlist/:id', function (req, res) {
+       
+        var patientid = req.body.pid;
+        Patient.findById(patientid, function (err, Data) {
+            if (err) return res.error(500 , "There was a problem finding the List.");
+             res.success(200, "",Data);
+        }).populate('Family');
 });
-// router.get('/viewData/:id', VerifyToken, function (req, res) {
-//       User.findById(req.params.id, function (err, user) {
-//           if (err) return res.status(500).send("There was a problem finding the user.");
-//           if (!user) return res.status(404).send("No user found.");
-//           res.status(200).send(user);
-//       });
-// });
 
 router.put('/edit/:id', function (req, res) {
         Family.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, user) {

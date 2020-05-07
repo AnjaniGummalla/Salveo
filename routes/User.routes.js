@@ -7,18 +7,20 @@ router.use(bodyParser.json());
 var UserModel = require('./../models/UserModel');
 var Doctor = require('./../models/DoctorModel');
 var Patient = require('./../models/PatientModel');
+var CompanyModel = require("./../models/CompanyModel");
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
 
 
 router.post('/register', async function(req, res) {
-     var email = req.body.Email;
+  try{
+    var email = req.body.Email;
      var type = req.body.Type;
      var checkData = await UserModel.findOne({Email:email,Type:type});
      console.log("check value" ,checkData);
         if(checkData !== null){
             
-            res.sucess(200, "Email id already exists");
+            res.error(300, "Email id already exists");
              
              }
                 await UserModel.create({
@@ -36,15 +38,26 @@ router.post('/register', async function(req, res) {
           if (err) return res.error(500, "There was a problem in registering.");
            console.log(err)
 
-          res.success(200, "User registration successful");
+          res.success(200, "User registration successful",user);
         });
+  }
+     catch(e){
+      
+      res.error(500,"Internal server issue");
+     }
 });
 
 router.post('/login',  async function(req, res) {
-
+          
+          var corporatecode = req.body.corporatecode;
+          console.log("corporatecode",corporatecode)
       try{
 
         var Emailcheck = await UserModel.findOne({Email:req.body.Email});
+
+        var patientDetails = await Patient.findOne({Email:req.body.Email});
+
+        var DoctorsDetails = await Doctor.findOne({Email:req.body.Email});
        
         if( Emailcheck == null){
 
@@ -52,13 +65,23 @@ router.post('/login',  async function(req, res) {
 
         }
 
+         if('null' != corporatecode){
+
+          var CorporateCodedata = await CompanyModel.findOne({Corporatecode:req.body.corporatecode});
+          console.log("details.........", CorporateCodedata)
+          
+          if(CorporateCodedata == null){
+
+            res.error(401,"corporate code does not exists");
+          }
+          else
+            res.success(200, "Login successfully", patientDetails);
+        }
+        else
+        {
         var PasswordCheck = await UserModel.find({Email:req.body.Email,Password:req.body.Password});
 
          if (!PasswordCheck) return res.error(401,"Incorrect password");
-
-        var patientDetails = await Patient.find({Email:req.body.Email});
-
-        var DoctorsDetails = await Doctor.find({Email:req.body.Email});
    
         if(patientDetails == null){
 
@@ -69,6 +92,7 @@ router.post('/login',  async function(req, res) {
           res.success(200, "Login successfully", patientDetails);
         }
       }
+    }
      catch(e){
 
       return res.error(500, "server_error");
@@ -122,7 +146,7 @@ router.put('/edit/:id', function (req, res) {
 
         UserModel.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, user) {
             if (err) return res.status(500).send("There was a problem updating the user.");
-            res.success(200,"User updated successfully");
+            res.success(200,"User updated successfully",user);
         });
 });
 
@@ -135,4 +159,27 @@ router.delete('/delete/:id', function (req, res) {
       });
 });
 
+router.post('/patientdetails', function (req, res) {
+    
+     var email = req.body.Email;
+
+        Patient.findOne({Email:email}, function (err, users) {
+            if (err) return res.error(500 , "There was a problem finding the Patientlist.");
+             res.success(200, "patientdata", users);
+        
+        });
+});
+router.post('/familydetails', async function (req, res) {
+  try{
+     var email = req.body.Email;
+
+    var familydetails = await Patient.findOne({Email:email}).populate('Family').select('Family');
+    res.success(200, "FamilyDetails",familydetails);
+    
+  }
+  catch(e){
+     res.error(500, "Internal server error");
+  }
+   
+});
 module.exports = router;

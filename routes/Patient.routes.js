@@ -9,13 +9,13 @@ var Family = require('./../models/FamilyModel');
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
 
-router.post('/signup', function(req, res) {
+router.post('/signup', async function(req, res) {
+try {
 
+        var lat = req.body.lat;
+        var long = req.body.long;
 
-    var lat = req.body.lat;
-   var long = req.body.long;
-
-        Patient.create({
+       await Patient.create({
             Name: req.body.Name,
             LastName : req.body.LastName,
             Email: req.body.Email,
@@ -44,35 +44,39 @@ router.post('/signup', function(req, res) {
 
         }, 
 
-        function (err, user) {
+        function (err, data) {
           if (err) return res.status(500).send("There was a problem registering.");
           console.log(err)
 
-          res.success(200, "Details Inserted successfully");
-        });
+          res.success(200, "Details Inserted successfully",data);
+        });  
+}
+        catch(e){
+            res.success(500, "Internal server error");
+        }
 
 });
 
 
 router.get('/getlist', function (req, res) {
 
-        Patient.find({}, function (err, patients) {
+        Patient.find({}, function (err, Data) {
             if (err) return res.error(500 , "There was a problem finding the PatientList.");
-             res.success(200, "Patientlist",patients);
-        });
+             res.success(200, "Patientlist",Data);
+        })
 });
 
 router.put('/edit/:id', function (req, res) {
-        Patient.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, user) {
+        Patient.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, Data) {
             if (err) return res.status(500).send("There was a problem updating the user.");
-            res.status(200).send(user);
+            res.success(200, "Data updated successfully",Data);
         });
 });
 // // DELETES A USER FROM THE DATABASE
 router.delete('/delete/:id', function (req, res) {
-      Patient.findByIdAndRemove(req.params.id, function (err, user) {
-          if (err) return res.status(500).send("There was a problem deleting the user.");
-          res.status(200).send("User: "+ user.name +" was deleted.");
+      Patient.findByIdAndRemove(req.params.id, function (err, Data) {
+          if (err) return res.status(500).send("There was a problem deleting the Data.");
+           res.success(200, "Data Deleted Successfully",Data);
       });
 });
 

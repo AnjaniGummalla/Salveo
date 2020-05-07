@@ -60,6 +60,7 @@ let codes = [
     ['PaymentRequired', 'error', 402],
     ['Forbidden', 'error', 403],
     ['NotFound', 'error', 404],
+    ['Failed', 'error', 300],
     ['MethodNotAllowed', 'error', 405],
     ['NotAcceptable', 'error', 406],
     ['RequestTimeout', 'error', 408],
@@ -76,7 +77,7 @@ let codes = [
     ['NoContent', 'success', 204],
     ['ResetContent', 'success', 205],
     ['PartialContent', 'success', 206],
-    ['Default', 'error', 500]
+    ['Default', 'error', 500],
 ];
 
 /**
@@ -130,8 +131,8 @@ let createResponseType = function(name, status = 'success', code = 200, callback
                 // Return the stack only if isn't a production env.
                 stack: debug ? stack : 0,
                 // Return the query only if isn't a production env.
-                query: debug ? this.query || 0 : 0,
-                time: this.time || 0
+                //query: debug ? this.query || 0 : 0,
+                //time: this.time || 0
             };
         };
 
