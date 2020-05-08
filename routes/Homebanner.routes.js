@@ -10,20 +10,24 @@ var Homebanner = require('./../models/HomebannerModel');
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
 
-router.post('/create', function(req, res) {
 
-        Homebanner.create({
-          Image_link: req.body.Image_link,
-          Added_by: req.body.Added_by,
-          UpdatedAt: req.body.UpdatedAt,
-        }, 
+router.post('/create',  async function(req, res) {
+try {
+        let fields = {
 
-        function (err, user) {
-          if (err) return res.status(500).send({message:"There was a problem in creating Homebanner details."});
-          console.log(err)
+            "Image_link" : req.body.Image_link || "",
+            "Added_by": req.body.Added_by || "",
+            "Updated_date" : req.body.Updated_date || "",
+        }
 
-          res.success(200, "Details Inserted successfully");
-        });
+       var Inserteddata = await Homebanner.create(fields);
+
+          res.success(200, "Details Inserted successfully",Inserteddata);
+          
+}
+        catch(e){
+            res.error(500, "Internal server error");
+        }
 
 });
 

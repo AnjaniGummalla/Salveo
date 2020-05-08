@@ -13,10 +13,11 @@ var FamilyRouter = require('./routes/Family.routes');
 var PaymentRouter = require('./routes/Payment.routes');
 var HomebannerRouter = require('./routes/Homebanner.routes');
 var DoctorTypeRouter = require('./routes/Doctortype.routes');
+var AvailabletimeRouter = require('./routes/Doctor_avtime.routes');
 
 var responseMiddleware = require('./middlewares/response.middleware');
 
-var BaseUrl = "54.214.141.11:3000"; 
+var BaseUrl = "http://54.214.141.11:3000"; 
 const mongoose = require('mongoose'); 
 mongoose.connect('mongodb://localhost:27017/Salveo'); 
 var db = mongoose.connection; 
@@ -81,6 +82,7 @@ app.use('/family',FamilyRouter);
 app.use('/payment',PaymentRouter);
 app.use('/homebanner',HomebannerRouter);
 app.use('/doctortype',DoctorTypeRouter);
+app.use('/avtime', AvailabletimeRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -44,7 +44,7 @@ var DoctorSchema = new mongoose.Schema({
     ,
     Information: String,
 
-    login_type: String,
+    Logintype: String,
 
     Updated_At: String,
 

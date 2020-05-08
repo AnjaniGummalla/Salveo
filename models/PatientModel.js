@@ -71,7 +71,7 @@ var PatientSchema = new mongoose.Schema({
 
   last_login_time: String,
 
-  login_type: String,
+  Logintype: String,
  
 });
 mongoose.model('Patient', PatientSchema);

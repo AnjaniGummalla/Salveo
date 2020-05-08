@@ -53,7 +53,8 @@ router.post('/register', async function(req, res) {
               "Email" : req.body.Email,
               "Password" : req.body.Password,
               "Name":  req.body.Name,
-              "Phone" : req.body.Phone
+              "Phone" : req.body.Phone,
+              "Logintype": req.body.Logintype,
             }
            if(type == 0){
 
@@ -94,7 +95,7 @@ router.post('/login',  async function(req, res) {
 
          if('null' != corporatecode){
 
-          var CorporateCodedata = await CompanyModel.findOne({Corporatecode:req.body.corporatecode});
+          var CorporateCodedata = await CompanyModel.findOne({CorporateCode:req.body.corporatecode});
           console.log("details.........", CorporateCodedata)
           
           if(CorporateCodedata == null){
@@ -102,17 +103,17 @@ router.post('/login',  async function(req, res) {
             res.error(300,"corporate code does not exists");
           }
           else
-            var PasswordCheck1 = await UserModel.find({Email:req.body.Email,Password:req.body.Password});
+            var PasswordCheck1 = await UserModel.findOne({Email:req.body.Email,Password:req.body.Password});
 
-         if (!PasswordCheck1) return res.error(401,"Incorrect password");
+         if (PasswordCheck1 == null) return res.error(300,"Incorrect password");
 
            return res.success(200, "Login successfully", patientDetails);
         }
         else
         {
-        var PasswordCheck = await UserModel.find({Email:req.body.Email,Password:req.body.Password});
+        var PasswordCheck = await UserModel.findOne({Email:req.body.Email,Password:req.body.Password});
 
-         if (!PasswordCheck) return res.error(401,"Incorrect password");
+         if (PasswordCheck == null) return res.error(300,"Incorrect password");
    
         if(patientDetails == null){
 
@@ -169,10 +170,10 @@ router.post('/numberlogin',  async function(req, res) {
             res.error(300,"corporate code does not exists");
           }
           else{
-            var PasswordCheck1 = await UserModel.find({Phone:req.body.Phone,Password:req.body.Password});
+            var PasswordCheck1 = await UserModel.findOne({Phone:req.body.Phone,Password:req.body.Password});
           }
 
-         if (!PasswordCheck1) return res.error(300,"Incorrect password");
+         if (PasswordCheck1 == null) return res.error(300,"Incorrect password");
 
            return res.success(200, "Login successfully1", patientDetails);
         }
@@ -180,7 +181,7 @@ router.post('/numberlogin',  async function(req, res) {
         {
         var PasswordCheck = await UserModel.find({Phone:req.body.Phone,Password:req.body.Password});
 
-         if (!PasswordCheck) return res.error(300,"Incorrect password");
+         if (PasswordCheck == null) return res.error(300,"Incorrect password");
    
         if(patientDetails == null){
 

@@ -10,19 +10,23 @@ var Doctortype = require('./../models/Doctor_typeModel');
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
 
-router.post('/create', function(req, res) {
 
-        Doctortype.create({
-          Image_icon: req.body.Image_link,
-          Name_of_the_type: req.body.Added_by,
-        }, 
+router.post('/create',  async function(req, res) {
+try {
+        let fields = {
 
-        function (err, user) {
-          if (err) return res.status(500).send({message:"There was a problem in creating Doctortype details."});
-          console.log(err)
+            "Image_icon" : req.body.Image_icon  || "",
+            "Name_of_the_type": req.body.Name_of_the_type || "",
+        }
 
-          res.success(200, "Details Inserted successfully");
-        });
+       var Inserteddata = await Doctortype.create(fields);
+
+          res.success(200, "Details Inserted successfully",Inserteddata);
+          
+}
+        catch(e){
+            res.error(500, "Internal server error");
+        }
 
 });
 
