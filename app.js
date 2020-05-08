@@ -16,7 +16,7 @@ var DoctorTypeRouter = require('./routes/Doctortype.routes');
 
 var responseMiddleware = require('./middlewares/response.middleware');
 
-
+var BaseUrl = "54.214.141.11:3000"; 
 const mongoose = require('mongoose'); 
 mongoose.connect('mongodb://localhost:27017/Salveo'); 
 var db = mongoose.connection; 
@@ -43,8 +43,11 @@ app.post('/upload', function(req, res) {
 
   sampleFile = req.files.sampleFile;
 
-  uploadPath = __dirname + '/uploads/' + sampleFile.name;
+  uploadPath = __dirname + '/public/uploads/' + sampleFile.name;
+
+  var Finalpath =  BaseUrl +'/uploads/'+ sampleFile.name;
    console.log("uploaded path",uploadPath )
+
 
   sampleFile.mv(uploadPath, function(err) {
     if (err) {
@@ -53,7 +56,7 @@ app.post('/upload', function(req, res) {
    return res.error(500, "Internal server error");
     }
 
-   return res.success(200,"file upload success",uploadPath);
+   return res.success(200,"file upload success",Finalpath);
   });
 });
 

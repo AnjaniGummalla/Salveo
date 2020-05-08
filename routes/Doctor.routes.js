@@ -16,8 +16,7 @@ try {
         var lat = req.body.lat;
         var long = req.body.long;
         let fields = {
-          
-         "ContactNumber":req.body.ContactNumber || "",  
+            
          "DOB" : req.body.DOB || "",
          "Languages": req.body.Languages || "",
          "Qualifications" : req.body.Qualifications || "",
@@ -34,7 +33,6 @@ try {
          "AvailableHours": req.body. AvailableHours || "",
          "OnlineConsultant": req.body.OnlineConsultant || "",
          "Information": req.body.Information || "",
-          "login_type" : req.body.login_type || "",
           "Updated_At" : req.body.Updated_At || "",
           "last_login_time": req.body.last_login_time || "",
           "Available_type": req.body.Available_type || "",

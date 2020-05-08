@@ -27,7 +27,7 @@ router.post('/create', function (req, res) {
           if (err) return res.status(500).send("There was a problem registering.");
           console.log(err)
 
-           res.success(200, "Details Inserted Successfully");
+           res.success(200, "Details Inserted Successfully",user);
         });
 });
 // router.get('/viewData/:id', VerifyToken, function (req, res) {

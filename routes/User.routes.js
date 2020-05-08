@@ -16,6 +16,7 @@ router.post('/register', async function(req, res) {
   try{
     console.log("request...",req.body)
     var email = req.body.Email;
+    var name = req.body.Name;
     var phone = req.body.Phone;
      var type = req.body.Type;
      var logintype = req.body.Logintype;
@@ -75,17 +76,17 @@ router.post('/register', async function(req, res) {
 router.post('/login',  async function(req, res) {
           
           var corporatecode = req.body.corporatecode;
+
+        var patientDetails = await Patient.findOne({Email:req.body.Email});
+
+        var DoctorsDetails = await Doctor.findOne({Email:req.body.Email});
          
           console.log("corporatecode",corporatecode)
       try{
 
         var Emailcheck = await UserModel.findOne({Email:req.body.Email});
 
-        var patientDetails = await Patient.findOne({Email:req.body.Email});
-
-        var DoctorsDetails = await Doctor.findOne({Email:req.body.Email});
-       
-        if( 'null' == Emailcheck){
+        if(null == Emailcheck){
 
         res.error(300, "Email not found");
 
@@ -124,6 +125,7 @@ router.post('/login',  async function(req, res) {
       }
     }
      catch(e){
+      console.log("errorrrr..........", e)
 
       return res.error(500, "server_error");
 
@@ -140,15 +142,22 @@ router.post('/numberlogin',  async function(req, res) {
 
         var Phonecheck = await UserModel.findOne({Phone:req.body.Phone});
 
+        console.log(Phonecheck);
+
+        if( null == Phonecheck){
+
+           console.log("entered");
+
+
+        return res.error(300, "PhoneNumber not found");
+
+        }
+
         var patientDetails = await Patient.findOne({Phone:req.body.Phone});
 
         var DoctorsDetails = await Doctor.findOne({Phone:req.body.Phone});
        
-        if( 'null' == Phonecheck){
-
-        res.error(404, "PhoneNumber not found");
-
-        }
+        
 
          if('null' != corporatecode){
 
@@ -159,12 +168,13 @@ router.post('/numberlogin',  async function(req, res) {
 
             res.error(300,"corporate code does not exists");
           }
-          else
+          else{
             var PasswordCheck1 = await UserModel.find({Phone:req.body.Phone,Password:req.body.Password});
+          }
 
          if (!PasswordCheck1) return res.error(300,"Incorrect password");
 
-           return res.success(200, "Login successfully", patientDetails);
+           return res.success(200, "Login successfully1", patientDetails);
         }
         else
         {
@@ -174,11 +184,11 @@ router.post('/numberlogin',  async function(req, res) {
    
         if(patientDetails == null){
 
-          res.success(200, "Login successfully", DoctorsDetails);
+          res.success(200, "Login successfully2", DoctorsDetails);
         }
         else{
 
-          res.success(200, "Login successfully", patientDetails);
+          res.success(200, "Login successfully3", patientDetails);
         }
       }
     }
