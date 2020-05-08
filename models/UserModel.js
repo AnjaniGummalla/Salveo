@@ -12,15 +12,36 @@ var UserSchema = new mongoose.Schema({
 
   Password: String,
   
-  Type: Number,
+  Type: { type: Number,
+        enum: [0, 1,2],
+        default: 0}, 
   
-  Phone: String,
+  Phone: {
 
-  Logintype: String,
+    type: String,
+    unique: true
+  
+  },
+
+  Logintype: { 
+    type: Number,
+    enum: [1,2,3],
+    default: 0},
 
   UpdatedAt : String,
 
   Lastlogin : String,
+
+  Patient : {
+
+    type: Schema.Types.ObjectId,
+    ref: 'Patient',
+  },
+
+  Doctor: {
+    type: Schema.Types.ObjectId,
+    ref: 'Doctor',
+  }
 });
 mongoose.model('User', UserSchema);
 

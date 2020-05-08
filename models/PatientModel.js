@@ -9,7 +9,6 @@ var PatientSchema = new mongoose.Schema({
   Email:{
 
   	type: String,
-  	unique: true
   },
 
   Age: Number,
@@ -53,6 +52,13 @@ var PatientSchema = new mongoose.Schema({
      
       },
 
+      Payment:{  
+
+       type: Schema.Types.ObjectId,
+       ref: 'Payment',
+     
+      },
+
   Company: String,
 
   Documents: String,
@@ -65,7 +71,7 @@ var PatientSchema = new mongoose.Schema({
 
   last_login_time: String,
 
-  login_type: String
+  login_type: String,
  
 });
 mongoose.model('Patient', PatientSchema);

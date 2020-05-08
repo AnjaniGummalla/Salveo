@@ -9,50 +9,45 @@ var Family = require('./../models/FamilyModel');
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
 
-router.post('/signup', async function(req, res) {
+router.post('/signup',  async function(req, res) {
 try {
+        var query = {"Email": req.body.Email};
+        var lat = req.body.lat || "";
+        var long = req.body.long || "";
+        let fields = {
 
-        var lat = req.body.lat;
-        var long = req.body.long;
-
-       await Patient.create({
-            Name: req.body.Name,
-            LastName : req.body.LastName,
-            Email: req.body.Email,
-            Age: req.body.Age,
-            Gender : req.body.Gender,
-            Address: req.body.Address,
-            Phone: req.body.Phone,
-            CustomerCode: req.body.CustomerCode,
-            Invoice: req.body.Invoice,
-            Height : req.body.Height,
-            Weight : req.body.Weight,
-            Suffering_for: req.body.Suffering_for,
-            Looking_doctor_like: req.body.Looking_doctor_like,
-            Looking_doctor_specialisation: req.body.Looking_doctor_specialisation,
-            Current_location: { 
+            "Name": req.body.Name || "",
+            "LastName" : req.body.LastName || "",
+            "Age": req.body.Age || "",
+            "Gender" : req.body.Gender || "",
+            "Address": req.body.Address || "",
+            "Phone": req.body.Phone || "",
+            "CustomerCode": req.body.CustomerCode || "",
+            "Invoice": req.body.Invoice || "",
+            "Height" : req.body.Height || "",
+            "Weight" : req.body.Weight || "",
+            "Suffering_for": req.body.Suffering_for || "" ,
+            "Looking_doctor_like": req.body.Looking_doctor_like || "",
+            "Looking_doctor_specialisation": req.body.Looking_doctor_specialisation || "",
+            "Current_location": { 
                         "type": "Point",
                         "coordinates": [lat,long]
                       },
-            Company: req.body.Company,
-            Documents: req.body.Documents,
-            Attach_prescription: req.body.Attach_prescription,
-            About_me: req.body.About_me,
-            Update_date: req.body.Update_date,
-            last_login_time: req.body.last_login_time,
-            login_type: req.body.login_type
+            "Documents": req.body.Documents || "" ,
+            "Attach_prescription": req.body.Attach_prescription || "",
+            "About_me": req.body.About_me || "",
+            "Update_date": req.body.Update_date || "",
+            "last_login_time": req.body.last_login_time || "",
 
-        }, 
+        }
 
-        function (err, data) {
-          if (err) return res.status(500).send("There was a problem registering.");
-          console.log(err)
+       var Inserteddata = await Patient.findOneAndUpdate(query,fields,{new: true});
 
-          res.success(200, "Details Inserted successfully",data);
-        });  
+          res.success(200, "Details Inserted successfully",Inserteddata);
+          
 }
         catch(e){
-            res.success(500, "Internal server error");
+            res.error(500, "Internal server error");
         }
 
 });

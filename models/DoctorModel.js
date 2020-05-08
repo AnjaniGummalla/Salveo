@@ -12,7 +12,7 @@ var DoctorSchema = new mongoose.Schema({
   
   Password : String,
   
-  ContactNumber:String,
+  Phone:String,
 
   Qualifications : String,
 

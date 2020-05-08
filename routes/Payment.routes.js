@@ -12,6 +12,9 @@ router.use(responseMiddleware());
 
 router.post('/create', function(req, res) {
 
+        let request = req.body;
+        let patientData = req.body.patientData;
+
         Payment.create({
           Doctor_name: req.body.Doctor_name,
           Doctor_email_id: req.body.Doctor_email_id,
@@ -26,23 +29,25 @@ router.post('/create', function(req, res) {
           Appointment_id: req.body.Appointment_id,
         }, 
 
-        function (err, user) {
-          if (err) return res.status(500).send({message:"There was a problem in creating payment details."});
+       async function (err, data) {
+          if (err) return res.status(500).send("There was a problem inserting the data.");
           console.log(err)
-
-          res.success(200, "Details Inserted successfully");
+          var PaymentDetails = await Patient.findByIdAndUpdate(patientData,{Payment :user._id} ,{ upsert: true, new: true });
+         
+          res.success(200, "Payment details inserted successfully",data);
         });
 
 });
 
-router.get('/getlist', function (req, res) {
-
-        Payment.find({}, function (err, Payments) {
-            if (err) return res.status(500).send("There was a problem finding the Payments.");
-            res.success(200, "Paymentslist", Payments);
-        });
+router.post('/getlist/', function (req, res) {
+       
+        var patientid = req.body.pid;
+        
+        Patient.findById(patientid, function (err, Data) {
+            if (err) return res.error(500 , "There was a problem finding the List.");
+             res.success(200, "",Data);
+        }).populate('Family');
 });
-
 router.put('/edit/:id', function (req, res) {
             
             Payment.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, user) {

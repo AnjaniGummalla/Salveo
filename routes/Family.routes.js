@@ -17,30 +17,30 @@ router.post('/create', async function(req, res) {
         let request = req.body;
         let patientData = req.body.patientData;
         console.log("patient id in which the data is inserted", patientData);
-    var lat = req.body.lat;
-   var long = req.body.long;
+         var lat = req.body.lat;
+         var long = req.body.long;
 
         await family.create({
-            Name: req.body.Name,
-            Email_id: req.body.Email_id,
-            LastName: req.body.LastName,
-            Suffering_for: req.body.Suffering_for,
-            Looking_doctor_like: req.body.Looking_doctor_like,
-            Looking_doctor_specialisation: req.body.Looking_doctor_specialisation,
+            Name: req.body.Name || "",
+            Email_id: req.body.Email_id || "",
+            LastName: req.body.LastName || "",
+            Suffering_for: req.body.Suffering_for || "",
+            Looking_doctor_like: req.body.Looking_doctor_like || "",
+            Looking_doctor_specialisation: req.body.Looking_doctor_specialisation || "",
             Current_location: { 
                                   "type": "Point",
                                   "coordinates": [lat,long]
                                 },
             
-            DOB : req.body.DOB,
-            Attach_documents: req.body.Attach_documents,
-            Attach_prescription: req.body.Attach_prescription,
-            Relation :req.body.Relation,
-            Age: req.body.Age,
-            Gender : req.body.Gender,
-            BloodGroup : req.body.BloodGroup,
-            ContactNumber:req.body.ContactNumber,
-            Information: req.body.Information,
+            DOB : req.body.DOB || "",
+            Attach_documents: req.body.Attach_documents || "",
+            Attach_prescription: req.body.Attach_prescription || "",
+            Relation :req.body.Relation || "",
+            Age: req.body.Age || "",
+            Gender : req.body.Gender || "",
+            BloodGroup : req.body.BloodGroup || "",
+            ContactNumber:req.body.ContactNumber || "",
+            Information: req.body.Information || "",
 
         }, 
 
@@ -49,20 +49,21 @@ router.post('/create', async function(req, res) {
           console.log(err)
           var familyid = await Patient.findByIdAndUpdate(patientData,{Family :user._id} ,{ upsert: true, new: true });
           console.log("familyid updated successfully in the pateint list",familyid )
-          res.success(200, "Family details Inserted successfully");
+          res.success(200, "Family details Inserted successfully",user);
         });
 }
 catch(e){
       res.error(500, "Internal server error");
 }
 });
-router.get('/getlist/:id', function (req, res) {
+router.get('/getlist/', function (req, res) {
        
         var patientid = req.body.pid;
+        
         Patient.findById(patientid, function (err, Data) {
             if (err) return res.error(500 , "There was a problem finding the List.");
              res.success(200, "",Data);
-        }).populate('Family');
+        }).populate('Family').select('Family');
 });
 
 router.put('/edit/:id', function (req, res) {

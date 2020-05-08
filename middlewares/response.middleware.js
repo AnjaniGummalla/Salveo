@@ -124,10 +124,10 @@ let createResponseType = function(name, status = 'success', code = 200, callback
             return {
                 message: message || '',
                 data: data || {},
-                name: name,
+                //name: name,
                 status: status,
                 code: code,
-                errors: errors || [],
+                //errors: errors || [],
                 // Return the stack only if isn't a production env.
                 stack: debug ? stack : 0,
                 // Return the query only if isn't a production env.

@@ -10,54 +10,51 @@ var Doctor = require('./../models/DoctorModel');
 var responseMiddleware = require('./../middlewares/response.middleware');
 router.use(responseMiddleware());
 
-router.post('/signup', async function(req, res) {
-  try{
-
-    var lat = req.body.lat;
-   var long = req.body.long;
-
-        await Doctor.create({
-         Name: req.body.Name,
-         Email:req.body.Email,
-         Password:req.body.Password,
-         ContactNumber:req.body.ContactNumber,  
-         DOB : req.body.DOB,
-         Languages: req.body.Languages,
-         Qualifications : req.body.Qualifications,
-         HighestQualifications: req.body.HighestQualifications,
-         Specilization: req.body.Specilization,
-         Year_of_Passout: req.body.YearPassing,
-          Current_location: { 
+router.post('/signup',  async function(req, res) {
+try {
+        var query = {"Email": req.body.Email};
+        var lat = req.body.lat;
+        var long = req.body.long;
+        let fields = {
+          
+         "ContactNumber":req.body.ContactNumber || "",  
+         "DOB" : req.body.DOB || "",
+         "Languages": req.body.Languages || "",
+         "Qualifications" : req.body.Qualifications || "",
+         "HighestQualifications": req.body.HighestQualifications || "",
+         "Specilization": req.body.Specilization || "",
+         "Year_of_Passout": req.body.YearPassing || "",
+          "Current_location": { 
               "type": "Point",
               "coordinates": [lat,long]
             },
-         Experience: req.body.Experience,
-         Current_employee_id: req.body.Current_employee_id,
-         EmployeeAt: req.body.EmployeeAt,
-         AvailableHours: req.body. AvailableHours,
-         OnlineConsultant: req.body.OnlineConsultant,
-         Information: req.body.Information,
-          login_type : req.body.login_type,
-          Updated_At : req.body.Updated_At,
-          last_login_time: req.body.last_login_time,
-          Available_type: req.body.Available_type,
-          Service: req.body.Service,
-          Special_mention:req.body.Special_mention,
-          Charge_Per_15min:req.body.Charge_Per_15min,
-        }, 
+         "Experience": req.body.Experience || "",
+         "Current_employee_id": req.body.Current_employee_id || "",
+         "EmployeeAt": req.body.EmployeeAt || "",
+         "AvailableHours": req.body. AvailableHours || "",
+         "OnlineConsultant": req.body.OnlineConsultant || "",
+         "Information": req.body.Information || "",
+          "login_type" : req.body.login_type || "",
+          "Updated_At" : req.body.Updated_At || "",
+          "last_login_time": req.body.last_login_time || "",
+          "Available_type": req.body.Available_type || "",
+          "Service": req.body.Service || "",
+          "Special_mention":req.body.Special_mention || "",
+          "Charge_Per_15min":req.body.Charge_Per_15min || "",
 
-        function (err, data) {
-          if (err) return res.status(500).send({message:"There was a problem registering."});
-          console.log(err)
-          console.log("mmmmmmmmmmmmmmmm" ,data)
-          res.success(200, "Details Inserted successfully",data);
-        });
-      }
-      catch(e){
-        res.error(500, "Internal server error");
-      }
+        }
+
+       var Inserteddata = await Doctor.findOneAndUpdate(query,fields,{new: true});
+
+          res.success(200, "Details Inserted successfully",Inserteddata);
+          
+}
+        catch(e){
+            res.error(500, "Internal server error");
+        }
 
 });
+
 router.post('/login', function(req, res) {
 
       Doctor.findOne({ Email: req.body.Email }, async function (err, user) {
